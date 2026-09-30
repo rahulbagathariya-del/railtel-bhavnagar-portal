@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailTel Bhavnagar Division | Server Room Portal</title>
+<meta name="description" content="RailTel Bhavnagar Division server room document and information portal">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Slab:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--blue:#0757a5;--blue2:#0b73c9;--red:#d71920;--ink:#142033;--muted:#64748b;--bg:#f4f7fb;--card:#fff;--line:#dce4ee;--shadow:0 12px 35px rgba(20,32,51,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.topline{height:5px;background:linear-gradient(90deg,var(--blue) 0 78%,var(--red) 78% 100%)}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.nav{max-width:1200px;margin:auto;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;border-radius:12px;background:var(--blue);display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px;box-shadow:0 6px 15px rgba(7,87,165,.25)}
+.brand b{display:block;font-size:17px}.brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.admin{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:9px;font-weight:600;color:var(--blue);cursor:pointer}
+.hero{background:linear-gradient(115deg,#063f7b,#0875ca);color:#fff}
+.hero-inner{max-width:1200px;margin:auto;padding:48px 22px 44px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.hero h1{font-family:"Roboto Slab",serif;font-size:38px;line-height:1.12;margin:0 0 12px}.hero p{margin:0;opacity:.9;max-width:650px;line-height:1.6}
+.rail{width:210px;height:150px;border:1px solid rgba(255,255,255,.25);border-radius:22px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:62px;font-weight:800}
+main{max-width:1200px;margin:auto;padding:30px 22px 60px}
+.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}.search{flex:1;max-width:520px;position:relative}.search input{width:100%;padding:13px 15px 13px 42px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:14px;outline:none}.search span{position:absolute;left:14px;top:11px;font-size:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:28px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}.stat small{color:var(--muted)}.stat strong{display:block;font-size:25px;margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.room{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);transition:.2s}.room:hover{transform:translateY(-2px);box-shadow:0 15px 38px rgba(20,32,51,.12)}
+.room-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.room h2{margin:0;font-size:21px}.badge{font-size:11px;font-weight:700;background:#e9f3ff;color:var(--blue);padding:6px 9px;border-radius:20px}
+.meta{color:var(--muted);font-size:12px;margin:8px 0 16px}.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:0;border-radius:9px;padding:10px 12px;font-weight:650;cursor:pointer;font-size:13px}.primary{background:var(--blue);color:#fff}.secondary{background:#eef4fa;color:var(--blue)}.danger{background:#fff0f0;color:#b0181d}
+.empty{display:none;padding:35px;text-align:center;color:var(--muted);grid-column:1/-1}
+footer{background:#102a43;color:#d8e5f2;padding:25px 22px;text-align:center;font-size:12px}
+.modal{display:none;position:fixed;inset:0;background:rgba(7,18,31,.58);z-index:50;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.panel{background:#fff;border-radius:17px;max-width:720px;width:100%;max-height:90vh;overflow:auto;padding:24px}.panel h2{margin-top:0}.close{float:right;border:0;background:#f1f5f9;border-radius:8px;padding:7px 10px;cursor:pointer}.doc-list{display:grid;gap:10px;margin-top:16px}.doc{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}.doc-name{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis}.doc-size{font-size:11px;color:var(--muted)}
+.qr-wrap{text-align:center;padding:10px 0}.qr-wrap canvas,.qr-wrap img{margin:10px auto;display:block}.url{font-size:11px;color:var(--muted);word-break:break-all;background:#f7f9fc;padding:8px;border-radius:8px}
+.upload{border:2px dashed #c8d5e4;padding:20px;border-radius:12px;text-align:center;margin-top:14px}.upload input{max-width:100%}
+.notice{font-size:12px;line-height:1.5;color:#6b4d00;background:#fff8df;border:1px solid #f3df9d;padding:11px;border-radius:9px;margin-top:15px}
+@media(max-width:760px){.hero-inner{padding:35px 20px}.hero h1{font-size:29px}.rail{display:none}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.toolbar{align-items:stretch;flex-direction:column}.search{max-width:none}}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header><div class="nav">
+  <div class="brand"><div class="logo">RT</div><div><b>RailTel Corporation of India Ltd.</b><span>Bhavnagar Division • Server Room Portal</span></div></div>
+  <button class="admin" onclick="openAdmin()">⚙ Admin / Documents</button>
+</div></header>
+<section class="hero"><div class="hero-inner">
+  <div><h1>Server Room Information Portal</h1><p>Centralized access to server-room details, PDFs, drawings, maintenance records and other important documents for RailTel Bhavnagar Division.</p></div>
+  <div class="rail">RAIL<br><span style="color:#ef3d43">TEL</span></div>
+</div></section>
+<main>
+  <div class="toolbar"><div><h2 style="margin:0 0 4px">Server Rooms</h2><span style="color:var(--muted);font-size:13px">Scan the QR code at a location to open its dedicated page.</span></div><div class="search"><span>⌕</span><input id="search" placeholder="Search server room..." oninput="render()"></div></div>
+  <div class="stats"><div class="stat"><small>Total Server Rooms</small><strong id="roomCount">5</strong></div><div class="stat"><small>Documents Stored</small><strong id="docCount">0</strong></div><div class="stat"><small>Portal Status</small><strong style="color:#12824a">● Active</strong></div></div>
+  <div id="grid" class="grid"></div><div id="empty" class="empty">No matching server room found.</div>
+</main>
+<footer>RailTel • Bhavnagar Division &nbsp;|&nbsp; Internal Information Portal</footer>
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="panel">
+  <button class="close" onclick="closeModal()">✕</button><h2 id="modalTitle"></h2><div id="modalBody"></div>
+</div></div>
+<script>
+const rooms=["Bhavnagar","Dhola","Botad","Dhasa","Khijadiya"];
+const key="railtel_bhavnagar_docs_v1";
+let docs=JSON.parse(localStorage.getItem(key)||"{}");
+rooms.forEach(r=>docs[r]??=[]);
+function save(){localStorage.setItem(key,JSON.stringify(docs));updateStats()}
+function updateStats(){document.getElementById("docCount").textContent=Object.values(docs).reduce((a,b)=>a+b.length,0)}
+function publicUrl(room){return location.href.split("#")[0]+"#room="+encodeURIComponent(room)}
+function render(){const q=document.getElementById("search").value.toLowerCase().trim(),grid=document.getElementById("grid"),empty=document.getElementById("empty");grid.innerHTML="";rooms.filter(r=>r.toLowerCase().includes(q)).forEach((r,i)=>{const count=docs[r].length,el=document.createElement("article");el.className="room";el.innerHTML=`<div class="room-head"><div><h2>${r}</h2><div class="meta">RailTel Bhavnagar Division • Server Room ${String(i+1).padStart(2,"0")}</div></div><span class="badge">${count} document${count===1?"":"s"}</span></div><div class="actions"><button class="btn primary" onclick="openRoom('${r}')">View Details</button><button class="btn secondary" onclick="showQR('${r}')">▣ QR Code</button><button class="btn secondary" onclick="openDocs('${r}')">▤ Documents</button></div>`;grid.appendChild(el)});empty.style.display=grid.children.length?"none":"block";updateStats()}
+function openRoom(r){location.hash="room="+encodeURIComponent(r);document.getElementById("modalTitle").textContent=r+" Server Room";document.getElementById("modalBody").innerHTML=`<p style="color:var(--muted);font-size:13px">Dedicated information page for <b>${r}</b> server room.</p><div class="doc-list">${docs[r].length?docs[r].map((d,idx)=>`<div class="doc"><div><div class="doc-name">📄 ${escapeHtml(d.name)}</div><div class="doc-size">${formatBytes(d.size)}</div></div><button class="btn secondary" onclick="viewDoc('${r}',${idx})">Open</button></div>`).join(""):"<div style='color:var(--muted);font-size:13px'>No documents uploaded yet.</div>"}</div><div class="notice">Suggested information for this room: equipment inventory, rack details, UPS/battery details, OFC/fiber details, network diagram, IP/MPLS details, maintenance history, contact information and inspection reports.</div>`;document.getElementById("modal").classList.add("open")}
+function openDocs(r){openAdmin(r)}
+function showQR(r){document.getElementById("modalTitle").textContent=r+" • QR Code";document.getElementById("modalBody").innerHTML=`<div class="qr-wrap"><div style="font-weight:700">Scan to open ${r} Server Room</div><div id="qrcode"></div><div class="url">${escapeHtml(publicUrl(r))}</div><button class="btn primary" style="margin-top:12px" onclick="printQR('${r}')">🖨 Print QR</button></div>`;document.getElementById("modal").classList.add("open");new QRCode(document.getElementById("qrcode"),{text:publicUrl(r),width:210,height:210,colorDark:"#0b2f54",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})}
+function printQR(r){showQR(r);setTimeout(()=>window.print(),350)}
+function openAdmin(preselect){document.getElementById("modalTitle").textContent="Document Management";document.getElementById("modalBody").innerHTML=`<label style="font-size:13px;font-weight:650">Select server room</label><select id="roomSelect" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;margin:7px 0 12px">${rooms.map(r=>`<option ${r===preselect?"selected":""}>${r}</option>`).join("")}</select><div class="upload"><b>Upload PDF / document</b><p style="font-size:12px;color:var(--muted)">Files are stored in this browser for this demo. For a shared production portal, connect this page to a server/cloud storage.</p><input type="file" id="fileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" multiple onchange="uploadFiles()"></div><div id="adminDocs"></div>`;document.getElementById("roomSelect").onchange=()=>refreshAdminDocs();document.getElementById("modal").classList.add("open");refreshAdminDocs()}
+function refreshAdminDocs(){const r=document.getElementById("roomSelect").value;document.getElementById("adminDocs").innerHTML=`<div style="margin-top:18px;font-weight:700">${r} Documents</div><div class="doc-list">${docs[r].length?docs[r].map((d,i)=>`<div class="doc"><div><div class="doc-name">📄 ${escapeHtml(d.name)}</div><div class="doc-size">${formatBytes(d.size)}</div></div><button class="btn danger" onclick="deleteDoc('${r}',${i})">Delete</button></div>`).join(""):"<div style='font-size:13px;color:var(--muted);margin-top:10px'>No documents.</div>"}</div>`}
+function uploadFiles(){const r=document.getElementById("roomSelect").value,files=[...document.getElementById("fileInput").files];files.forEach(f=>{const reader=new FileReader();reader.onload=()=>{docs[r].push({name:f.name,size:f.size,type:f.type,data:reader.result});save();refreshAdminDocs();render()};reader.readAsDataURL(f)})}
+function deleteDoc(r,i){if(confirm("Delete this document?")){docs[r].splice(i,1);save();refreshAdminDocs();render()}}
+function viewDoc(r,i){const d=docs[r][i],w=window.open();if(!w)return;if(d.type.startsWith("image/")||d.type==="application/pdf")w.document.write(`<title>${escapeHtml(d.name)}</title><iframe src="${d.data}" style="width:100%;height:100vh;border:0"></iframe>`);else w.document.write(`<p>This browser demo stores the file locally. Download/open it from the admin view.</p><a href="${d.data}" download="${escapeHtml(d.name)}">Download ${escapeHtml(d.name)}</a>`)}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function formatBytes(n){if(!n)return "0 B";let u=["B","KB","MB","GB"],i=0;while(n>=1024&&i<u.length-1){n/=1024;i++}return n.toFixed(i?1:0)+" "+u[i]}
+function route(){const m=location.hash.match(/room=([^&]+)/);if(m){const r=decodeURIComponent(m[1]);if(rooms.includes(r))openRoom(r)}}
+render();route();
+</script>
+<style>@media print{header,.hero,main,footer,.close{display:none!important}.modal{display:flex!important;position:static;background:white;padding:0}.panel{box-shadow:none;max-width:none}.qr-wrap .url{font-size:9px}}</style>
+</body>
+</html>
