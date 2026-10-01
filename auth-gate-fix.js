@@ -1,4 +1,18 @@
 (function(){
+  // A new page/tab open must start at the login screen. Keep the session only
+  // across an in-page reload after a successful login.
+  try{
+    const nav=performance.getEntriesByType('navigation')[0];
+    const isNewOpen=nav && nav.type==='navigate';
+    if(isNewOpen){
+      window.supabase.auth.signOut({scope:'local'}).catch(function(){});
+      try{sessionStorage.removeItem('rail_guest');}catch(e){}
+      if(location.hash){history.replaceState(null,'',location.pathname+location.search);}
+      setTimeout(function(){location.reload();},50);
+      return;
+    }
+  }catch(e){}
+
   function fix(){
     const style=document.getElementById('authGateCss');
     if(style) style.textContent=style.textContent.replace(/body\{display:none!important\}/g,'body.auth-locked{display:none!important}');
@@ -6,12 +20,8 @@
     if(gate) document.body.classList.remove('auth-locked');
   }
 
-  // Guest login is intentionally view-only and uses the portal's guest credentials.
-  // Restore the guest session after the auth gate closes/reloads.
   try{ if(sessionStorage.getItem('rail_guest')==='1') window.__railGuestAuthenticated=true; }catch(e){}
 
-  // The main page calls details(...) from each PoP folder. Define it here because
-  // older portal builds did not include the function, causing folder clicks to do nothing.
   window.details=async function(pop){
     const guestOk=window.__railGuestAuthenticated===true || sessionStorage.getItem('rail_guest')==='1';
     let adminOk=false;
