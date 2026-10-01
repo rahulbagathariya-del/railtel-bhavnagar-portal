@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inject gate scripts and white-screen fix
+      - name: Inject gate scripts, white-screen fix and Supabase key compatibility
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -20,6 +20,9 @@ jobs:
           for tag in tags:
               if tag not in s:
                   s=s.replace('</body>', tag+'</body>')
+          # Use the project's active legacy anon key for broad Supabase JS v2 compatibility.
+          # This is a publishable client key and must never be replaced with a service-role key.
+          s=s.replace('sb_publishable_NPBWNlDlQZMZ9_hN5UWcqQ_pcZP3eKg','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtaGRwcXZpd2J0c3VhYW94cGxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3ODgyNzYsImV4cCI6MjEwNjM2NDI3Nn0.6mmtxd0s0f9crEcdgRKOCJ00sX1xCl4OkXxjzXxHUwM')
           fix='<script>(function(){function f(){var x=document.getElementById("authGateCss");if(x)x.textContent=x.textContent.replace(/body\\{display:none!important\\}/g,"body.auth-locked{display:none!important}");var g=document.getElementById("authGate");if(g)document.body.classList.remove("auth-locked")}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",f);else f();setTimeout(f,50);setTimeout(f,250)})();</script>'
           if 'id="authGateCss"' in s and 'body.auth-locked' not in s:
               s=s.replace('</body>', fix+'</body>')
