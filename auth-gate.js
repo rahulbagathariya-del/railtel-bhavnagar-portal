@@ -5,8 +5,8 @@
   const GUEST_EMAIL='guest@railtel-bhavnagar.com';
   const GUEST_USER='guest';
   const GUEST_PASS='Guest@2026';
-  const sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-  window.__railSupabase=sb;
+  let sb=null;
+  try{ if(window.supabase && window.supabase.createClient){ sb=window.supabase.createClient(SUPA_URL,SUPA_KEY); window.__railSupabase=sb; } }catch(e){ console.error('Supabase init failed:',e); }
   const css='<style id="authGateCss">body{display:block!important}#authGate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f7f9fc;padding:20px;z-index:999999;font-family:Inter,Arial,sans-serif;color:#172033}#authGate .card{position:relative;width:min(400px,100%);background:#fff;border:1px solid #e5eaf0;border-radius:16px;padding:30px;box-shadow:0 12px 35px #1232;text-align:center}#authGate .admin-top{position:fixed;right:20px;top:18px;width:auto;padding:9px 14px;background:#fff;color:#0757a5;border:1px solid #d9e5f0;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px #1231}#authGate img{width:88px;height:88px;object-fit:contain;margin-bottom:10px}#authGate h1{font-size:21px;margin:0}#authGate .div{font-size:13px;color:#718096;margin:5px 0 24px}#authGate h2{font-size:18px;margin:0 0 15px}#authGate input{width:100%;padding:11px 12px;margin:6px 0;border:1px solid #e5eaf0;border-radius:8px;box-sizing:border-box}#authGate button.login{width:100%;padding:11px;border:0;border-radius:8px;margin-top:8px;background:#0757a5;color:#fff;font-weight:700;cursor:pointer}#authGate .status{font-size:12px;color:#b42318;margin-top:12px;min-height:18px}#authGate .small{font-size:10px;color:#8a95a5;margin-top:15px}.railLogout{border:1px solid #e5eaf0;background:#fff;color:#b42318;padding:8px 11px;border-radius:8px;cursor:pointer;font-weight:700}';
   document.head.insertAdjacentHTML('beforeend',css);
   function showGate(){
@@ -63,12 +63,12 @@
   window.adminLogin=function(){showAdmin()};
   async function boot(){
     try{
-    if(!window.supabase){ throw new Error('Supabase library failed to load.'); }
+    showGate();
+    if(!sb){ const s=document.getElementById('agStatus'); if(s) s.textContent='Login service could not be initialized. Please refresh and try again.'; return; }
     const {data:{user},error}=await sb.auth.getUser();
     if(error) throw error;
     if(user && ((user.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase() || (user.email||'').toLowerCase()===GUEST_EMAIL.toLowerCase())){reveal(user);return;}
     if(user) await sb.auth.signOut({scope:'local'});
-    showGate();
     if(location.hash) history.replaceState(null,'',location.pathname+location.search);
     }catch(e){
       console.error('RailTel auth boot failed:',e);
