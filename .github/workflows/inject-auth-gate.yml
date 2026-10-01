@@ -10,15 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inject gate scripts
+      - name: Inject gate scripts and white-screen fix
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          for tag in ['<script src="auth-gate.js"></script>','<script src="auth-gate-fix.js"></script>']:
+          tags=['<script src="auth-gate.js"></script>','<script src="auth-gate-fix.js"></script>']
+          for tag in tags:
               if tag not in s:
                   s=s.replace('</body>', tag+'</body>')
+          fix='<script>(function(){function f(){var x=document.getElementById("authGateCss");if(x)x.textContent=x.textContent.replace(/body\\{display:none!important\\}/g,"body.auth-locked{display:none!important}");var g=document.getElementById("authGate");if(g)document.body.classList.remove("auth-locked")}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",f);else f();setTimeout(f,50);setTimeout(f,250)})();</script>'
+          if 'id="authGateCss"' in s and 'body.auth-locked' not in s:
+              s=s.replace('</body>', fix+'</body>')
           p.write_text(s)
           PY
       - name: Commit gate
@@ -28,5 +32,3 @@ jobs:
           git add index.html
           git diff --cached --quiet || git commit -m 'Inject auth gate'
           git push
-
-# Ensure authentication gate scripts are present after portal updates.
