@@ -62,11 +62,19 @@
   window.guestLogin=function(){showGate()};
   window.adminLogin=function(){showAdmin()};
   async function boot(){
-    const {data:{user}}=await sb.auth.getUser();
+    try{
+    if(!window.supabase){ throw new Error('Supabase library failed to load.'); }
+    const {data:{user},error}=await sb.auth.getUser();
+    if(error) throw error;
     if(user && ((user.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase() || (user.email||'').toLowerCase()===GUEST_EMAIL.toLowerCase())){reveal(user);return;}
     if(user) await sb.auth.signOut({scope:'local'});
     showGate();
     if(location.hash) history.replaceState(null,'',location.pathname+location.search);
+    }catch(e){
+      console.error('RailTel auth boot failed:',e);
+      showGate();
+      const s=document.getElementById('agStatus'); if(s) s.textContent='Login service is temporarily unavailable. Please try again.';
+    }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
