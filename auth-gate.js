@@ -22,7 +22,7 @@
   }
   function reveal(user){
     document.body.classList.remove('auth-locked');
-    const style=document.getElementById('authGateCss'); if(style) style.textContent=style.textContent.replace(/body\\{display:none!important\\}/g,'body.auth-locked{display:none!important}');
+    const style=document.getElementById('authGateCss'); if(style) style.textContent='body{display:block!important}';
     const gate=document.getElementById('authGate'); if(gate) gate.remove();
     const actions=document.querySelector('.actions');
     if(actions){
