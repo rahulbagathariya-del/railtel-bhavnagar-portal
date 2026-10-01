@@ -49,8 +49,9 @@
     const s=document.getElementById('agStatus'),u=document.getElementById('agUser').value.trim(),p=document.getElementById('agGuestPass').value;
     if(u!==GUEST_USER||p!==GUEST_PASS){s.textContent='Invalid guest username or password.';return}
     s.textContent='Signing in…';
+    if(!sb){s.textContent='Login service is not ready. Please refresh once.';return}
     const {error}=await sb.auth.signInWithPassword({email:GUEST_EMAIL,password:GUEST_PASS});
-    if(error){s.textContent=error.message||'Guest account is not available.';return}
+    if(error){s.textContent=error.message||'Guest login failed.';return}
     location.reload();
   }
   async function logout(){
@@ -65,8 +66,8 @@
     try{
     showGate();
     if(!sb){ const s=document.getElementById('agStatus'); if(s) s.textContent='Login service could not be initialized. Please refresh and try again.'; return; }
-    const {data:{user},error}=await sb.auth.getUser();
-    if(error) throw error;
+    const {data:{session}}=await sb.auth.getSession();
+    const user=session&&session.user;
     if(user && ((user.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase() || (user.email||'').toLowerCase()===GUEST_EMAIL.toLowerCase())){reveal(user);return;}
     if(user) await sb.auth.signOut({scope:'local'});
     if(location.hash) history.replaceState(null,'',location.pathname+location.search);
