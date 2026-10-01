@@ -1,17 +1,23 @@
 (function(){
   const SUPA_URL='https://xmhdpqviwbtsuaaoxplo.supabase.co';
-  const SUPA_KEY='sb_publishable_NPBWNlDlQZMZ9_hN5UWcqQ_pcZP3eKg';
+  const SUPA_KEY='sb_publishable_NPBWNlDlQZMZ9_hN5UWcqP_QZP3eKg';
   const ADMIN_EMAIL='rahulbagathariya@gmail.com';
   const GUEST_EMAIL='guest@railtel-bhavnagar.com';
   const GUEST_USER='guest';
   const GUEST_PASS='Guest@2026';
   const sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-  const css=`<style id="authGateCss">body{display:none!important}#authGate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f7f9fc;padding:20px;z-index:999999;font-family:Inter,Arial,sans-serif;color:#172033}#authGate .card{width:min(430px,100%);background:#fff;border:1px solid #e5eaf0;border-radius:16px;padding:30px;box-shadow:0 12px 35px #1232;text-align:center}#authGate img{width:92px;height:92px;object-fit:contain;margin-bottom:10px}#authGate h1{font-size:22px;margin:0}#authGate .div{font-size:13px;color:#718096;margin:5px 0 24px}#authGate h2{font-size:18px;margin:0 0 15px}#authGate input{width:100%;padding:11px 12px;margin:6px 0;border:1px solid #e5eaf0;border-radius:8px;box-sizing:border-box}#authGate button{width:100%;padding:11px;border:0;border-radius:8px;margin-top:8px;background:#0757a5;color:#fff;font-weight:700;cursor:pointer}#authGate button.alt{background:#eef4fa;color:#0757a5;border:1px solid #d9e5f0}#authGate .status{font-size:12px;color:#b42318;margin-top:12px;min-height:18px}#authGate .ok{color:#18794e}.sep{margin:18px 0;border-top:1px solid #e5eaf0}.small{font-size:10px;color:#8a95a5;margin-top:15px}`;
+  const css=`<style id="authGateCss">body{display:none!important}#authGate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f7f9fc;padding:20px;z-index:999999;font-family:Inter,Arial,sans-serif;color:#172033}#authGate .card{position:relative;width:min(400px,100%);background:#fff;border:1px solid #e5eaf0;border-radius:16px;padding:30px;box-shadow:0 12px 35px #1232;text-align:center}#authGate .admin-top{position:fixed;right:20px;top:18px;width:auto;padding:9px 14px;background:#fff;color:#0757a5;border:1px solid #d9e5f0;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px #1231}#authGate img{width:88px;height:88px;object-fit:contain;margin-bottom:10px}#authGate h1{font-size:21px;margin:0}#authGate .div{font-size:13px;color:#718096;margin:5px 0 24px}#authGate h2{font-size:18px;margin:0 0 15px}#authGate input{width:100%;padding:11px 12px;margin:6px 0;border:1px solid #e5eaf0;border-radius:8px;box-sizing:border-box}#authGate button.login{width:100%;padding:11px;border:0;border-radius:8px;margin-top:8px;background:#0757a5;color:#fff;font-weight:700;cursor:pointer}#authGate .status{font-size:12px;color:#b42318;margin-top:12px;min-height:18px}#authGate .ok{color:#18794e}.small{font-size:10px;color:#8a95a5;margin-top:15px}`;
   document.head.insertAdjacentHTML('beforeend',css);
   function screen(){
-    document.body.innerHTML=`<div id="authGate"><div class="card"><img src="RailTel_L.png" alt="Logo"><h1>RailTel Corporation Of India Limited</h1><div class="div">Bhavnagar Division</div><h2>Portal Login</h2><input id="agEmail" type="email" placeholder="Admin email"><input id="agPass" type="password" placeholder="Admin password"><button id="agAdmin">Admin Login</button><div class="sep"></div><input id="agUser" type="text" placeholder="Guest username"><input id="agGuestPass" type="password" placeholder="Guest password"><button class="alt" id="agGuest">Guest Login</button><div class="status" id="agStatus"></div><div class="small">Login is required to access PoP folders and documents.</div></div></div>`;
-    document.getElementById('agAdmin').onclick=admin;
+    document.body.innerHTML=`<div id="authGate"><button class="admin-top" id="agAdminTop">🔐 Admin Login</button><div class="card"><img src="RailTel_L.png" alt="Logo"><h1>RailTel Corporation Of India Limited</h1><div class="div">Bhavnagar Division</div><h2>Guest Login</h2><input id="agUser" type="text" placeholder="Username" autocomplete="username"><input id="agGuestPass" type="password" placeholder="Password" autocomplete="current-password"><button class="login" id="agGuest">Login as Guest</button><div class="status" id="agStatus"></div><div class="small">Guest access is view-only. Administrator access is available from the top-right button.</div></div></div>`;
+    document.getElementById('agAdminTop').onclick=showAdmin;
     document.getElementById('agGuest').onclick=guest;
+  }
+  function showAdmin(){
+    const c=document.querySelector('#authGate .card');
+    c.innerHTML=`<img src="RailTel_L.png" alt="Logo"><h1>RailTel Corporation Of India Limited</h1><div class="div">Bhavnagar Division</div><h2>Admin Login</h2><input id="agEmail" type="email" placeholder="Admin email" autocomplete="username"><input id="agPass" type="password" placeholder="Admin password" autocomplete="current-password"><button class="login" id="agAdmin">Admin Login</button><button class="login" id="backGuest" style="background:#eef4fa;color:#0757a5">Back to Guest Login</button><div class="status" id="agStatus"></div>`;
+    document.getElementById('agAdmin').onclick=admin;
+    document.getElementById('backGuest').onclick=screen;
   }
   async function admin(){
     const s=document.getElementById('agStatus'),email=document.getElementById('agEmail').value.trim(),pass=document.getElementById('agPass').value;
@@ -25,14 +31,9 @@
   async function guest(){
     const s=document.getElementById('agStatus'),u=document.getElementById('agUser').value.trim(),p=document.getElementById('agGuestPass').value;
     if(u!==GUEST_USER||p!==GUEST_PASS){s.textContent='Invalid guest username or password.';return}
-    s.textContent='Checking Guest account…';
+    s.textContent='Signing in…';
     let {error}=await sb.auth.signInWithPassword({email:GUEST_EMAIL,password:GUEST_PASS});
-    if(error){
-      s.textContent='Creating Guest account…';
-      const created=await sb.auth.signUp({email:GUEST_EMAIL,password:GUEST_PASS,options:{data:{display_name:'Guest User',role:'guest'}}});
-      if(created.error){s.textContent=created.error.message||'Guest account could not be created.';return}
-      if(!created.data.session){s.textContent='Guest account created, but email confirmation is enabled. Disable email confirmation in Supabase Auth, then try again.';return}
-    }
+    if(error){s.textContent=error.message||'Guest account is not available.';return}
     location.reload();
   }
   async function boot(){
