@@ -13,15 +13,6 @@
     document.getElementById('agAdmin').onclick=admin;
     document.getElementById('agGuest').onclick=guest;
   }
-  async function setupGuest(){
-    try{
-      const {data:{session}}=await sb.auth.getSession();
-      if(!session||!session.user||session.user.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()) return {error:'Admin authentication required.'};
-      const r=await sb.functions.invoke('setup-guest');
-      if(r.error) return {error:r.error.message||'Guest setup failed.'};
-      return r.data||{};
-    }catch(e){return {error:e.message||'Guest setup failed.'}}
-  }
   async function admin(){
     const s=document.getElementById('agStatus'),email=document.getElementById('agEmail').value.trim(),pass=document.getElementById('agPass').value;
     if(!email||!pass){s.textContent='Enter admin email and password.';return}
@@ -29,17 +20,19 @@
     const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
     if(error){s.textContent=error.message;return}
     if(!data.user||data.user.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await sb.auth.signOut();s.textContent='This account is not an Admin account.';return}
-    s.className='status ok';s.textContent='Admin verified. Setting up Guest access…';
-    const g=await setupGuest();
-    if(g.error){await sb.auth.signOut();s.className='status';s.textContent=g.error;return}
     location.reload();
   }
   async function guest(){
     const s=document.getElementById('agStatus'),u=document.getElementById('agUser').value.trim(),p=document.getElementById('agGuestPass').value;
     if(u!==GUEST_USER||p!==GUEST_PASS){s.textContent='Invalid guest username or password.';return}
-    s.textContent='Signing in…';
-    const {error}=await sb.auth.signInWithPassword({email:GUEST_EMAIL,password:GUEST_PASS});
-    if(error){s.textContent='Guest account is not initialized yet. Ask the Admin to log in once, then try again.';return}
+    s.textContent='Checking Guest account…';
+    let {error}=await sb.auth.signInWithPassword({email:GUEST_EMAIL,password:GUEST_PASS});
+    if(error){
+      s.textContent='Creating Guest account…';
+      const created=await sb.auth.signUp({email:GUEST_EMAIL,password:GUEST_PASS,options:{data:{display_name:'Guest User',role:'guest'}}});
+      if(created.error){s.textContent=created.error.message||'Guest account could not be created.';return}
+      if(!created.data.session){s.textContent='Guest account created, but email confirmation is enabled. Disable email confirmation in Supabase Auth, then try again.';return}
+    }
     location.reload();
   }
   async function boot(){
@@ -48,8 +41,7 @@
     if(user && (user.email||'').toLowerCase()===GUEST_EMAIL.toLowerCase()) return;
     if(user) await sb.auth.signOut();
     screen();
-    const hash=location.hash;
-    if(hash) history.replaceState(null,'',location.pathname+location.search);
+    if(location.hash) history.replaceState(null,'',location.pathname+location.search);
   }
   boot();
 })();
