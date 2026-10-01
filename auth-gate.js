@@ -21,8 +21,9 @@
     document.getElementById('backGuest').onclick=showGate;
   }
   function reveal(user){
-    document.body.classList.remove('auth-locked');
-    const style=document.getElementById('authGateCss'); if(style) style.textContent='body{display:block!important}';
+    document.body.style.display='block';
+    document.documentElement.style.visibility='visible';
+    const style=document.getElementById('authGateCss'); if(style) style.remove();
     const gate=document.getElementById('authGate'); if(gate) gate.remove();
     const actions=document.querySelector('.actions');
     if(actions){
