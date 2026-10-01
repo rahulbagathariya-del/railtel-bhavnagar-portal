@@ -45,7 +45,7 @@
     const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
     if(error){s.textContent=error.message;return}
     if(!data.user||data.user.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await sb.auth.signOut();s.textContent='This account is not an Admin account.';return}
-    location.reload();
+    reveal(data.user); if(typeof window.adminPanel==='function') window.adminPanel();
   }
   async function guest(){
     const s=document.getElementById('agStatus'),u=document.getElementById('agUser').value.trim(),p=document.getElementById('agGuestPass').value;
