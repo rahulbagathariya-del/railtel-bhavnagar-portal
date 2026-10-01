@@ -1,6 +1,6 @@
 (function(){
   const SUPA_URL='https://xmhdpqviwbtsuaaoxplo.supabase.co';
-  const SUPA_KEY='sb_publishable_NPBWNlDlQZMZ9_hN5UWcqP_QZP3eKg';
+  const SUPA_KEY='sb_publishable_NPBWNlDlQZMZ9_hN5UWcqQ_pcZP3eKg';
   const ADMIN_EMAIL='rahulbagathariya@gmail.com';
   const GUEST_EMAIL='guest@railtel-bhavnagar.com';
   const GUEST_USER='guest';
