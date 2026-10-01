@@ -28,3 +28,5 @@ jobs:
           git add index.html
           git diff --cached --quiet || git commit -m 'Inject auth gate'
           git push
+
+# Ensure the authentication gate is re-injected after portal updates.
