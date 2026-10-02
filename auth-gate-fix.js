@@ -12,12 +12,17 @@
     const box=document.getElementById('popDocs');
     if(!docs.length){box.className='empty';box.innerHTML=admin?'No documents uploaded yet.':'No documents uploaded in this PoP yet.';return}
     box.className='';
-    box.innerHTML=docs.map(function(d){
+    const rows=await Promise.all(docs.map(async function(d){
       const file=escapeHtml(d.file_name||'Document'),type=escapeHtml(d.file_type||'File'),size=d.file_size?formatSizeSafe(d.file_size):'';
-      let href='#';try{href=sb.storage.from('pop-documents').getPublicUrl(d.storage_path).data.publicUrl||'#'}catch(e){}
-      const del=admin?'<button class="btn danger" onclick="deleteDoc(\''+encodeURIComponent(d.storage_path)+'\',\''+escapeHtml(d.id)+'\');setTimeout(()=>details(\''+escapeHtml(pop)+'\'),700)">Delete</button>':'';
-      return '<div class="doc"><div class="doc-main"><div class="doc-icon">'+fileIcon(d.file_name)+'</div><div><div class="doc-name">'+file+'</div><div class="doc-meta">'+type+(size?' · '+size:'')+'</div></div></div><div class="doc-actions">'+(href!=='#'?'<a class="btn light" href="'+href.replace(/"/g,'%22')+'" target="_blank" rel="noopener">Open</a>':'')+del+'</div></div>';
-    }).join('');
+      let href='#';
+      try{
+        const s=await sb.storage.from('pop-documents').createSignedUrl(d.storage_path,3600);
+        if(!s.error&&s.data&&s.data.signedUrl)href=s.data.signedUrl;
+      }catch(e){console.error('Signed URL error',e)}
+      const del=admin?'<button class="btn danger" onclick="deleteDoc(\\''+encodeURIComponent(d.storage_path)+'\\',\\''+escapeHtml(d.id)+'\\');setTimeout(()=>details(\\''+escapeHtml(pop)+'\\'),700)">Delete</button>':'';
+      return '<div class="doc"><div class="doc-main"><div class="doc-icon">'+fileIcon(d.file_name)+'</div><div><div class="doc-name">'+file+'</div><div class="doc-meta">'+type+(size?' · '+size:'')+'</div></div></div><div class="doc-actions">'+(href!=='#'?'<a class="btn light" href="'+href.replace(/"/g,'%22')+'" target="_blank" rel="noopener">Open</a>':'<span class="doc-meta">File unavailable</span>')+del+'</div></div>';
+    }));
+    box.innerHTML=rows.join('');
   }
   window.details=async function(pop){
     let user=null;try{user=(await sb.auth.getUser()).data.user}catch(e){}
